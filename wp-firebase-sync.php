@@ -103,11 +103,11 @@ function wfs_text_field_2_render()
 
 function wfs_listbox_field_0_page2_render(){
     $options = get_option('wfs_settings2');
+    $isset_post_type_option = isset($options['wfs_firebase_post_type_taget']);
     ?>
     <select name='wfs_settings2[wfs_firebase_post_type_taget]'>
-        <option value="pub" <?if(isset($options['wfs_firebase_post_type_taget'])=="pub") echo "selected"; 
-                                elseif(isset($options['wfs_firebase_post_type_taget'])) echo "selected"; ?>>Published post only</option>
-        <option value="all" <?if(isset($options['wfs_firebase_post_type_taget'])=="all") echo "selected"; ?>>All post (include draft)</option>
+        <option value="pub" <? if($isset_post_type_option){if($options['wfs_firebase_post_type_taget'] == "pub") echo "selected";}else echo "selected";?>>Published post only</option>
+        <option value="all" <? if($options['wfs_firebase_post_type_taget'] == "all") echo "selected"; ?>>All post (include draft)</option>
     </select>
     <?
 }
@@ -148,18 +148,10 @@ function wfs_settings_section_callback()
 function wfs_settings_section2_callback(){
     $options = get_option('wfs_settings2');
 
-    if (isset($options['wfs_firebase_post_type_taget'])) {
-        //$postTypeTaget = $options['wfs_firebase_uri'];
-    }
-
     //====For debug only======
-    echo "<p>";
-    echo "Test page 2 callback success <br>";
-    foreach($options as $value)
-    {
-        echo $value + "<br>";
-    }
-    echo "</p>";
+    // if (isset($options['wfs_firebase_post_type_taget'])) {
+    //     echo $options['wfs_firebase_post_type_taget'];
+    // }
 }
 
 
@@ -167,15 +159,12 @@ function wfs_options_page()
 {
     $active_tab = $_GET['tab'] ?? 'init';
     ?>
-    <form action='options.php' method='post'>
-
-        <h2>WP Firebase Sync</h2>
-
+     <h2>WP Firebase Sync</h2>
         <h2 class="nav-tab-wrapper">
-            <a href="?page=wp_firebase_sync&tab=init" class="nav-tab <?php echo $active_tab == 'init' ? 'nav-tab-active': '';?>">Init Config</a>
-            <a href="?page=wp_firebase_sync&tab=postsync" class="nav-tab <?php echo $active_tab == 'postsync' ? 'nav-tab-active': '';?>">Post Synchronize</a>
-        </h2>
-        
+        <a href="?page=wp_firebase_sync&tab=init" class="nav-tab <?php echo $active_tab == 'init' ? 'nav-tab-active': '';?>">Init Config</a>
+        <a href="?page=wp_firebase_sync&tab=postsync" class="nav-tab <?php echo $active_tab == 'postsync' ? 'nav-tab-active': '';?>">Post Synchronize</a>
+    </h2>
+    <form action='options.php' method='post'>
         <?php
         if($active_tab == "init")
         {
