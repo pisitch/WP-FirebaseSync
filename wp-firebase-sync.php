@@ -44,6 +44,14 @@ function wfs_settings_init()
         'pluginPage'
     );
 
+    add_settings_section(
+        'wfs_pluginPage2_section',
+        __('Post Synchronize', 'wp-firebase-sync'),
+        'wfs_settings_section2_callback',
+        'pluginPage'
+    )
+
+    //page1 fields
     add_settings_field(
         'wfs_firebase_uri',
         __('Firebase URI:', 'wp-firebase-sync'),
@@ -58,6 +66,15 @@ function wfs_settings_init()
         'wfs_text_field_2_render',
         'pluginPage',
         'wfs_pluginPage_section'
+    );
+
+    //Page 2 fields
+    add_settings_field(
+        'wfs_firebase_post_type_taget',
+        __('Post type target:', 'wp-firebase-sync'),
+        'wfs_listbox_field_0_page2_render',
+        'pluginPage',
+        'wfs_pluginPage2_section'
     );
 }
 
@@ -81,6 +98,17 @@ function wfs_text_field_2_render()
               name='wfs_settings[wfs_firebase_json_key]'><?php echo $options['wfs_firebase_json_key']; ?></textarea>
     <?php
 
+}
+
+function wfs_listbox_field_0_page2_render(){
+    $options = get_option('wfs_settings');
+    ?>
+    <select name='wfs_settings[wfs_firebase_post_type_taget]'>
+        <option value="pub" <?if(isset($options['wfs_firebase_post_type_taget'])=="pub") echo "selected"; 
+                                elseif(isset($options['wfs_firebase_post_type_taget'])) echo "selected"; ?>>Published post only</option>
+        <option value="all" <?if(isset($options['wfs_firebase_post_type_taget'])=="all") echo "selected"; ?>>All post (include draft)</option>
+    </select>
+    <?
 }
 
 
@@ -114,6 +142,17 @@ function wfs_settings_section_callback()
         }
         echo "</p>";
     }
+}
+
+function wfs_settings_section2_callback(){
+    $options = get_option('wfs_settings');
+
+    if (isset($options['wfs_firebase_post_type_taget'])) {
+        //$postTypeTaget = $options['wfs_firebase_uri'];
+    }
+    echo "<p>";
+    echo "Test page 2 callback success";
+    echo "</p>";
 }
 
 
