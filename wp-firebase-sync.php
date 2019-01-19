@@ -191,6 +191,7 @@ function wfs_options_page()
 function save_post_to_firebase($post_id)
 {
     $options = get_option('wfs_settings');
+    $options2 = get_option('wfs_settings2');
     SimpleCache::setEncryptKey($_SERVER['SERVER_SIGNATURE'] . $options['wfs_firebase_json_key']);
 
     if (SimpleCache::exists('firebase')) {
@@ -209,6 +210,13 @@ function save_post_to_firebase($post_id)
     }
 
     $post = WP_Post::get_instance($post_id);
+
+    if(!isset($options2['wfs_firebase_post_type_taget']) || $options2['wfs_firebase_post_type_taget'] == "pub")
+    {
+        if($post->post_status != "publish"){
+            return;
+        }
+    }
 
     if ($post->ID) {
         $mapper = new JsonMapper();
