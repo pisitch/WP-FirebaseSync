@@ -36,6 +36,7 @@ function wfs_settings_init()
 {
 
     register_setting('pluginPage', 'wfs_settings');
+    register_setting('pluginPage2', 'wfs_settings2');
 
     add_settings_section(
         'wfs_pluginPage_section',
@@ -48,8 +49,8 @@ function wfs_settings_init()
         'wfs_pluginPage2_section',
         __('Post Synchronize', 'wp-firebase-sync'),
         'wfs_settings_section2_callback',
-        'pluginPage'
-    )
+        'pluginPage2'
+    );
 
     //page1 fields
     add_settings_field(
@@ -73,7 +74,7 @@ function wfs_settings_init()
         'wfs_firebase_post_type_taget',
         __('Post type target:', 'wp-firebase-sync'),
         'wfs_listbox_field_0_page2_render',
-        'pluginPage',
+        'pluginPage2',
         'wfs_pluginPage2_section'
     );
 }
@@ -101,9 +102,9 @@ function wfs_text_field_2_render()
 }
 
 function wfs_listbox_field_0_page2_render(){
-    $options = get_option('wfs_settings');
+    $options = get_option('wfs_settings2');
     ?>
-    <select name='wfs_settings[wfs_firebase_post_type_taget]'>
+    <select name='wfs_settings2[wfs_firebase_post_type_taget]'>
         <option value="pub" <?if(isset($options['wfs_firebase_post_type_taget'])=="pub") echo "selected"; 
                                 elseif(isset($options['wfs_firebase_post_type_taget'])) echo "selected"; ?>>Published post only</option>
         <option value="all" <?if(isset($options['wfs_firebase_post_type_taget'])=="all") echo "selected"; ?>>All post (include draft)</option>
@@ -145,29 +146,48 @@ function wfs_settings_section_callback()
 }
 
 function wfs_settings_section2_callback(){
-    $options = get_option('wfs_settings');
+    $options = get_option('wfs_settings2');
 
     if (isset($options['wfs_firebase_post_type_taget'])) {
         //$postTypeTaget = $options['wfs_firebase_uri'];
     }
+
+    //====For debug only======
     echo "<p>";
-    echo "Test page 2 callback success";
+    echo "Test page 2 callback success <br>";
+    foreach($options as $value)
+    {
+        echo $value + "<br>";
+    }
     echo "</p>";
 }
 
 
 function wfs_options_page()
 {
-
+    $active_tab = $_GET['tab'] ?? 'init';
     ?>
     <form action='options.php' method='post'>
 
         <h2>WP Firebase Sync</h2>
 
+        <h2 class="nav-tab-wrapper">
+            <a href="?page=wp_firebase_sync&tab=init" class="nav-tab <?php echo $active_tab == 'init' ? 'nav-tab-active': '';?>">Init Config</a>
+            <a href="?page=wp_firebase_sync&tab=postsync" class="nav-tab <?php echo $active_tab == 'postsync' ? 'nav-tab-active': '';?>">Post Synchronize</a>
+        </h2>
+        
         <?php
-        settings_fields('pluginPage');
-        do_settings_sections('pluginPage');
-        submit_button();
+        if($active_tab == "init")
+        {
+            settings_fields('pluginPage');
+            do_settings_sections('pluginPage');
+            submit_button();
+        }else if($active_tab == "postsync")
+        {
+            settings_fields('pluginPage2');
+            do_settings_sections('pluginPage2');
+            submit_button();
+        }
         ?>
 
     </form>
