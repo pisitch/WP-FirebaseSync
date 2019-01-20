@@ -24,16 +24,16 @@ use JCFirebase\JCFirebase;
 /**
  * Register menu
  */
-
-add_action('admin_menu', 'wfs_add_admin_menu');
-add_action('admin_init', 'wfs_settings_init');
+if(is_admin())
+{
+    add_action('admin_menu', 'wfs_add_admin_menu');
+    add_action('admin_init', 'wfs_settings_init');
+}
 
 
 function wfs_add_admin_menu()
 {
-
     add_options_page('WP Firebase Sync', 'WP Firebase Sync', 'manage_options', 'wp_firebase_sync', 'wfs_options_page');
-
 }
 
 
