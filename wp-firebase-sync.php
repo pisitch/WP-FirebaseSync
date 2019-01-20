@@ -10,6 +10,11 @@ Author URI: http://jaredchu.com/
 License: MIT
 */
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/classes/JC_Post.php';
 
