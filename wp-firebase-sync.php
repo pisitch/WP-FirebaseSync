@@ -230,6 +230,11 @@ function save_post_to_firebase($post_id)
 
     $post = WP_Post::get_instance($post_id);
 
+    if($post->post_type != "post")
+    {
+        return;
+    }
+
     if(!isset($options2['wfs_firebase_post_type_taget']) || $options2['wfs_firebase_post_type_taget'] == "pub")
     {
         if($post->post_status != "publish"){
