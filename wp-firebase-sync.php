@@ -82,6 +82,12 @@ function wfs_settings_init()
         'pluginPage2',
         'wfs_pluginPage2_section'
     );
+
+    add_settings_field('wfs_firebase_remove_html_tag',
+    __('Remove Html Tags in content (Default:true):', 'wp-firebase-sync'),
+    'wfs_checkbox_field_1_page2_render',
+    'pluginPage2',
+    'wfs_pluginPage2_section');
 }
 
 
@@ -114,6 +120,14 @@ function wfs_listbox_field_0_page2_render(){
         <option value="pub" <? if($isset_post_type_option){if($options['wfs_firebase_post_type_taget'] == "pub") echo "selected";}else echo "selected";?>>Published post only</option>
         <option value="all" <? if($options['wfs_firebase_post_type_taget'] == "all") echo "selected"; ?>>All post (include draft)</option>
     </select>
+    <?
+}
+
+function wfs_checkbox_field_1_page2_render(){
+    $options = get_option('wfs_settings2');
+    $isset_wfs_firebase_remove_html_tag = isset($options['wfs_firebase_remove_html_tag']);
+    ?>
+        <input type="checkbox" name="wfs_settings2[wfs_firebase_remove_html_tag]" <? if($isset_post_type_option) {echo $options['wfs_firebase_remove_html_tag'];}else{ echo "checked";} ?>>
     <?
 }
 
@@ -224,8 +238,13 @@ function save_post_to_firebase($post_id)
     }
 
     if ($post->ID) {
+        // strip_tags()
         $mapper = new JsonMapper();
         $fbPost = $mapper->map($post, new JC_Post($firebase, $post->ID));
+
+        if(!isset($options2['wfs_firebase_remove_html_tag']) || $options2['wfs_firebase_remove_html_tag']){
+            $fbPost->post_content = strip_tags($fbPost->post_content);
+        }
 
         $fbPost->save();
     }
