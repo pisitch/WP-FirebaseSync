@@ -4,7 +4,7 @@
 Plugin Name: WP Firebase Sync
 Plugin URI: https://github.com/pisitch/WP-FirebaseSync
 Description: Plugin that allow WordPress to sync Post data with Firebase in real time.
-Version: 1.1
+Version: 1.1.1
 Author: Bawornsit C. 
 Original Author: Jared Chu
 License: MIT
@@ -248,7 +248,7 @@ function save_post_to_firebase($post_id)
         $fbPost = $mapper->map($post, new JC_Post($firebase, $post->ID));
 
         if(!isset($options2['wfs_firebase_remove_html_tag']) || $options2['wfs_firebase_remove_html_tag']){
-            $fbPost->post_content = strip_tags($fbPost->post_content);
+            $fbPost->post_content = trim(strip_tags($fbPost->post_content));
         }
 
         $fbPost->save();
